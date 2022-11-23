@@ -3,6 +3,9 @@ const path = require("path");
 
 const CopyPlugin = require("copy-webpack-plugin");
 const nodeExternals = require("webpack-node-externals");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
+const smp = new SpeedMeasurePlugin()
 
 function abs(...args) {
   return path.join(__dirname, ...args);
@@ -12,14 +15,13 @@ const SRC_ROOT = abs("./src");
 const PUBLIC_ROOT = abs("./public");
 const DIST_ROOT = abs("./dist");
 const DIST_PUBLIC = abs("./dist/public");
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 /** @type {Array<import('webpack').Configuration>} */
-module.exports = [
+module.exports = smp.wrap([
   {
     devtool: "inline-source-map",
     entry: path.join(SRC_ROOT, "client/index.jsx"),
-    mode: IS_PRODUCTION ? "production" : "development",
+    mode: process.env.NODE_ENV,
     module: {
       rules: [
         {
@@ -58,6 +60,7 @@ module.exports = [
       new CopyPlugin({
         patterns: [{ from: PUBLIC_ROOT, to: DIST_PUBLIC }],
       }),
+      new BundleAnalyzerPlugin(),
     ],
     resolve: {
       extensions: [".js", ".jsx"],
@@ -68,7 +71,7 @@ module.exports = [
     devtool: "inline-source-map",
     entry: path.join(SRC_ROOT, "server/index.js"),
     externals: [nodeExternals()],
-    mode: IS_PRODUCTION ? "production" : "development",
+    mode: process.env.NODE_ENV,
     module: {
       rules: [
         {
@@ -102,4 +105,4 @@ module.exports = [
     },
     target: "node",
   },
-];
+]);
