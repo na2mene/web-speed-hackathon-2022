@@ -12,13 +12,14 @@ const SRC_ROOT = abs("./src");
 const PUBLIC_ROOT = abs("./public");
 const DIST_ROOT = abs("./dist");
 const DIST_PUBLIC = abs("./dist/public");
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 /** @type {Array<import('webpack').Configuration>} */
 module.exports = [
   {
     devtool: "inline-source-map",
     entry: path.join(SRC_ROOT, "client/index.jsx"),
-    mode: "development",
+    mode: IS_PRODUCTION ? "production" : "development",
     module: {
       rules: [
         {
@@ -67,7 +68,7 @@ module.exports = [
     devtool: "inline-source-map",
     entry: path.join(SRC_ROOT, "server/index.js"),
     externals: [nodeExternals()],
-    mode: "development",
+    mode: IS_PRODUCTION ? "production" : "development",
     module: {
       rules: [
         {
