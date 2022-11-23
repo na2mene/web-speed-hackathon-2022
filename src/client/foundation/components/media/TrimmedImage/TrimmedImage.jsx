@@ -17,5 +17,5 @@ const convertFilePath = (src) => {
 
 /** @type {React.VFC<Props>} */
 export const TrimmedImage = ({ height, src, width }) => {
-  return <img src={convertFilePath(src)} height width />;
+  return <img src={convertFilePath(src)} height={height} width={width} loading="lazy" />;
 };
