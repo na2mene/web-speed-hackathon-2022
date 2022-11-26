@@ -41,8 +41,8 @@ export const apiRoute = async (fastify) => {
 
   fastify.get("/races", async (req, res) => {
     const now = new Date();
-    const since = moment.tz(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate() - 1}`);
-    const until = moment.tz(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate() + 1}`);
+    const since = moment.tz(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate() - 1}`, 'Asia/Tokyo');
+    const until = moment.tz(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate() + 1}`, 'Asia/Tokyo');
     const repo = (await createConnection()).getRepository(Race);
     const where = {
       startAt: Between(
