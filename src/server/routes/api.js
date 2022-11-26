@@ -40,38 +40,16 @@ export const apiRoute = async (fastify) => {
   });
 
   fastify.get("/races", async (req, res) => {
-    const since =
-      req.query.since != null ? moment.unix(req.query.since) : undefined;
-    const until =
-      req.query.until != null ? moment.unix(req.query.until) : undefined;
-
-    if (since != null && !since.isValid()) {
-      throw fastify.httpErrors.badRequest();
-    }
-    if (until != null && !until.isValid()) {
-      throw fastify.httpErrors.badRequest();
-    }
-
+    const now = new Date();
+    const since = moment.tz(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()} 00:00:00`, 'Asia/Tokyo');
+    const until = moment.tz(`${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()} 23:59:59`, 'Asia/Tokyo');
     const repo = (await createConnection()).getRepository(Race);
-
-    const where = {};
-    if (since != null && until != null) {
-      Object.assign(where, {
-        startAt: Between(
-          since.utc().format("YYYY-MM-DD HH:mm:ss"),
-          until.utc().format("YYYY-MM-DD HH:mm:ss"),
-        ),
-      });
-    } else if (since != null) {
-      Object.assign(where, {
-        startAt: MoreThanOrEqual(since.utc().format("YYYY-MM-DD HH:mm:ss")),
-      });
-    } else if (until != null) {
-      Object.assign(where, {
-        startAt: LessThanOrEqual(since.utc().format("YYYY-MM-DD HH:mm:ss")),
-      });
-    }
-
+    const where = {
+      startAt: Between(
+        since.utc().format("YYYY-MM-DD HH:mm:ss"),
+        until.utc().format("YYYY-MM-DD HH:mm:ss"),
+      ),
+    };
     const races = await repo.find({
       where,
     });
