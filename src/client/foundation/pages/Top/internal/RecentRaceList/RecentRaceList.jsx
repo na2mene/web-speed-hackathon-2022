@@ -46,7 +46,7 @@ const RaceTitle = styled.h2`
  */
 
 /** @type {React.VFC<ItemProps>} */
-const Item = ({ race }) => {
+const Item = React.memo(({ race }) => {
   const [closeAtText, setCloseAtText] = useState(formatCloseAt(race.closeAt));
 
   // 締切はリアルタイムで表示したい
@@ -100,5 +100,5 @@ const Item = ({ race }) => {
       </Stack>
     </ItemWrapper>
   );
-};
+});
 RecentRaceList.Item = Item;
