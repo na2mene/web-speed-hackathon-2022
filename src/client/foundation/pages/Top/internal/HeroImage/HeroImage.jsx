@@ -14,5 +14,5 @@ const Image = styled.img`
 
 /** @type {React.VFC<Props>} */
 export const HeroImage = ({ url }) => {
-  return <Image alt="" src={url} width="1024" height="735"  />;
+  return <Image alt="" src={url} width="1024" height="735" style={{width: '100%', height: 'auto'}} />;
 };
