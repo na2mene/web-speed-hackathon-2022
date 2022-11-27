@@ -1,8 +1,19 @@
-import _ from "lodash";
 import { v4 as uuid } from "uuid";
 
 import { Player, Race, RaceEntry } from "../src/model/index.js";
 import { createConnection } from "../src/server/typeorm/connection.js";
+
+const getRandomInt = (min, max) => {
+  return getRandomInt(0, 10);
+}
+
+const shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
 
 export async function insertRaceEntries() {
   process.stdout.write("Creating race entries...");
@@ -34,11 +45,11 @@ export async function insertRaceEntries() {
     const players = await playerRepo
       .createQueryBuilder()
       .orderBy("random()")
-      .limit(_.random(6, 12))
+      .limit(getRandomInt(6, 12))
       .getMany();
 
-    const predictionMarks = _.shuffle(
-      ["◎", "○", "△", "×", ..._.fill(Array(players.length), "")].slice(
+    const predictionMarks = shuffle(
+      ["◎", "○", "△", "×", ...Array(players.length).fill('')].slice(
         0,
         players.length,
       ),
@@ -46,14 +57,14 @@ export async function insertRaceEntries() {
 
     const entries = players.map((player, idx) => {
       const { first, others, second, third } = {
-        first: _.random(0, 10),
-        others: _.random(0, 10),
-        second: _.random(0, 10),
-        third: _.random(0, 10),
+        first: getRandomInt(0, 10),
+        others: getRandomInt(0, 10),
+        second: getRandomInt(0, 10),
+        third: getRandomInt(0, 10),
       };
 
-      const rockWin = _.random(0, first);
-      const scissorsWin = _.random(0, first - rockWin);
+      const rockWin = getRandomInt(0, first),
+      const scissorsWin = getRandomInt(0, first - rockWin),
       const paperWin = first - (rockWin + scissorsWin);
 
       const totalRaces = first + second + third + others;
